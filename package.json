@@ -1,0 +1,61 @@
+{
+	"author": {
+		"name": "Baptiste Pillot",
+		"email": "baptiste@pillot.fr"
+	},
+	"dependencies": {
+		"@itrocks/class-file": "latest",
+		"@itrocks/class-type": "latest",
+		"@itrocks/property-type": "latest",
+		"@itrocks/sorted-array": "latest",
+		"reflect-metadata": "^0.2"
+	},
+	"description": "Runtime introspection of TypeScript classes and their properties, including property type",
+	"devDependencies": {
+		"@types/node": "^22.10",
+		"typescript": "~5.6"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"exports": {
+		"import": "./esm/reflect.js",
+		"require": "./cjs/reflect.js"
+	},
+	"files": [
+		"LICENSE",
+		"README.md",
+		"*/*.d.ts",
+		"*/*.js",
+		"!esm/esm.*"
+	],
+	"homepage": "https://it.rocks",
+	"keywords": [
+		"class",
+		"it.rocks",
+		"property",
+		"reflect",
+		"reflection",
+		"runtime",
+		"type"
+	],
+	"license": "ISC",
+	"name": "@itrocks/reflect",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/itrocks-ts/reflect.git"
+	},
+	"scripts": {
+		"build": "npm run build:cjs && npm run build:esm",
+		"build:cjs": "tsc -p tsconfig.cjs.json",
+		"build:esm": "tsc -p tsconfig.esm.json && node esm/esm",
+		"build:demo": "npm run build:demo:cjs && npm run build:demo:esm",
+		"build:demo:cjs": "tsc -p tsconfig.demo.cjs.json",
+		"build:demo:esm": "tsc -p tsconfig.demo.esm.json",
+		"build:all": "npm run build && npm run build:demo",
+		"start:demo:cjs": "node demo/cjs/index",
+		"start:demo:esm": "node demo/esm/index"
+	},
+	"types": "./esm/reflect.d.ts",
+	"version": "0.0.2"
+}
