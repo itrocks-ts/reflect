@@ -78,7 +78,7 @@ export default class ReflectClass<T extends object = object>
 		return propertyNames
 	}
 
-	async getPropertyTypes()
+	get propertyTypes()
 	{
 		const identifier = typeIdentifier(this.type)
 		let value: PropertyTypes<T> | undefined = Reflect.getMetadata(TYPES, this.type, identifier)
@@ -86,16 +86,11 @@ export default class ReflectClass<T extends object = object>
 			value = {}
 			Reflect.defineMetadata(TYPES, value, this.type, identifier)
 			this.inheritedPropertyTypes(value)
-			Object.assign(value, await propertyTypesFromFile<T>(fileOf(this.type)))
+			Object.assign(value, propertyTypesFromFile<T>(fileOf(this.type)))
 			return value
 		}
 		Object.defineProperty(this, 'propertyTypes', {value})
 		return value
-	}
-
-	get propertyTypes()
-	{
-		return this.getPropertyTypes()
 	}
 
 }

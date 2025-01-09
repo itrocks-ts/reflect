@@ -23,16 +23,14 @@ export default class ReflectProperty<T extends object>
 		return value
 	}
 
-	async getCollectionType()
+	get collectionType()
 	{
-		return (await this.class.propertyTypes)[this.name]
-	}
-
-	get collectionType(): Promise<CollectionType<T>>
-	{
-		const value = this.getCollectionType()
+		const value = this.class.propertyTypes[this.name]
+		if (!(value instanceof CollectionType)) {
+			throw 'ReflectProperty.collectionType is meant to be used exclusively on collection properties'
+		}
 		Object.defineProperty(this, 'collectionType', { value })
-		return value as Promise<CollectionType<T>>
+		return value
 	}
 
 	get object()
@@ -42,14 +40,9 @@ export default class ReflectProperty<T extends object>
 		return value
 	}
 
-	async getType()
-	{
-		return (await this.class.propertyTypes)[this.name]
-	}
-
 	get type()
 	{
-		const value = this.getType()
+		const value = this.class.propertyTypes[this.name]
 		Object.defineProperty(this, 'type', { value })
 		return value
 	}

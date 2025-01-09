@@ -6,10 +6,12 @@
 
 # reflect
 
-Runtime introspection of TypeScript classes and their properties, including property type.
+Runtime introspection of TypeScript classes and their properties,
+including property types read from TypeScript declaration `.d.ts` files.
 
 ## Installation
 
+To use the Reflect API in your project, install the package:
 ```sh
 npm i @itrocks/reflect
 ```
@@ -42,19 +44,17 @@ import '@itrocks/class-file/automation'
 import { ReflectClass, ReflectProperty } from './reflect'
 import Product from './product'
 
-(async () => {
-	const product = new Product('Widget', 10)
-	const productClass = new ReflectClass(product)
+const product = new Product('Widget', 10)
+const productClass = new ReflectClass(product)
 
-	console.log(productClass.name)  // Product
-	console.log(productClass.propertyNames)  // ['basedOn', 'history', 'name', 'price']
-	console.log(await productClass.propertyTypes)  // { name: String, price: Number, basedOn: class Product, history: { containerType: Array, elementType: class Product } }
+console.log(productClass.name)  // Product
+console.log(productClass.propertyNames)  // ['basedOn', 'history', 'name', 'price']
+console.log(productClass.propertyTypes)  // { name: String, price: Number, basedOn: class Product, history: { containerType: Array, elementType: class Product } }
 
-	const priceProperty = new ReflectProperty(productClass, 'price')
+const priceProperty = new ReflectProperty(productClass, 'price')
 
-	console.log(await priceProperty.type)  // Number
-	console.log(priceProperty.value)  // 10
-})()
+console.log(priceProperty.type)  // Number
+console.log(priceProperty.value)  // 10
 ```
 
 ## References
@@ -62,11 +62,20 @@ import Product from './product'
 In this documentation, we will refer to the following:
 
 **Generics references:**
-- `T extends object`: Enables precise type control. Defined by the constructor parameter `object`.
+
+- `T extends object`: Enables precise type control through reflection class methods and properties.
+	Defined by the constructor parameter `object`.
 
 **Types references:**
-- [KeyOf<T>](https://github.com/itrocks-ts/class-type#keyof): The string property names in `T`.
-- [Type](https://github.com/itrocks-ts/class-type#type): A class for objects of type `T`.
+
+- [PropertyType](https://github.com/itrocks-ts/property-type#propertytype):
+	Represents any single property type, either primitive or complex.
+- [PropertyTypes](https://github.com/itrocks-ts/property-type#propertytypes):
+	A mapping of property names to their types.
+- [Type&lt;T&gt;](https://github.com/itrocks-ts/class-type#type):
+	A class for objects of type `T`.
+- [KeyOf&lt;T&gt;](https://github.com/itrocks-ts/class-type#keyof):
+	The string property names in `T`.
 
 ## ReflectClass
 
@@ -85,25 +94,25 @@ The `ReflectClass` class provides utilities for reflecting on a class or an obje
 	The name of the class.
 
 - `object: T | undefined`.
-	The object instance, or undefined if a class type is provided.
+	The object instance, or `undefined` if a [class type](https://github.com/itrocks-ts/class-type#type) was provided.
 
 - `type: Type<T>`.
-	The type information of the class.
+	The [type](https://github.com/itrocks-ts/class-type#type) information of the class.
 
 - `parent: ReflectClass | null`.
-	The parent class, or null if no parent exists.
+	The parent [class](#reflectclass), or `null` if no parent exists.
 
 - `properties: Record<KeyOf<T>, ReflectProperty<T>>`.
-	A map (object) of property names to [ReflectProperty](#reflectproperty) instances.
+	A map of property names ([KeyOf&lt;T&gt;](https://github.com/itrocks-ts/class-type#keyof))
+	to [ReflectProperty](#reflectproperty) instances.
 
 - `propertyNames: SortedArray<KeyOf<T>>`.
-	A [sorted array](https://github.com/itrocks-ts/sorted-array#sortedarray) of property names.
+	A [sorted array](https://github.com/itrocks-ts/sorted-array#sortedarray)
+	of [property names](https://github.com/itrocks-ts/class-type#keyof).
 
-- `propertyTypes: Promise<PropertyTypes<T>>`.
-	A [promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-	that resolves to a map of property names and their corresponding types.
-	To get property types, use `await`, like this:\
-	`const types = await myReflectClass.propertyTypes`
+- `propertyTypes: PropertyTypes<T>`.
+	A [map of property names](https://github.com/itrocks-ts/property-type#propertytypes)
+	and their corresponding [types](https://github.com/itrocks-ts/property-type#propertytype).
 
 ## ReflectProperty
 
@@ -123,21 +132,21 @@ The `ReflectProperty` class provides utilities for reflecting on a class or obje
 ### Properties
 
 - `name: KeyOf<T>`.
-	The name of the property.
+	The name of the property ([KeyOf&lt;T&gt;](https://github.com/itrocks-ts/class-type#keyof)).
 
 - `class: ReflectClass<T>`.
 	The [ReflectClass](#ReflectClass) instance associated with the property.
 
-- `collectionType: Promise<CollectionType<T>>`.
-	A [promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-	that resolves to the collection type of the property (throws an error if not a collection).
+- `collectionType: CollectionType<T>`.
+	Similar to `type`,
+	explicitly returning a [CollectionType](https://github.com/itrocks-ts/property-type#collectiontype)
+	(throws an error if not a collection).
 
 - `object: T | undefined`.
-	The object instance associated with the property.
+	The object instance associated with the property, or `undefined` if no `object` is provided.
 
-- `type: Promise<PropertyTypes<T>>`
-	A [promise](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise)
-	that resolves to the type of the property.
+- `type: PropertyType<T>`
+	The [type](https://github.com/itrocks-ts/property-type#propertytype) of the property.
 
 - `value: any`
 	The current value of the property, or `undefined` if no object is provided.
