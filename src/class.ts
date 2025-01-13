@@ -1,12 +1,11 @@
 import 'reflect-metadata'
-import { fileOf }                 from '@itrocks/class-file'
-import { baseType, isObject }     from '@itrocks/class-type'
-import { KeyOf, Type }            from '@itrocks/class-type'
-import { typeIdentifier, typeOf } from '@itrocks/class-type'
-import { PropertyTypes }          from '@itrocks/property-type'
-import propertyTypesFromFile      from '@itrocks/property-type'
-import { SortedArray }            from '@itrocks/sorted-array'
-import ReflectProperty            from './property'
+import { fileOf }            from '@itrocks/class-file'
+import { isObject, KeyOf }   from '@itrocks/class-type'
+import { Type, typeOf }      from '@itrocks/class-type'
+import { PropertyTypes }     from '@itrocks/property-type'
+import propertyTypesFromFile from '@itrocks/property-type'
+import { SortedArray }       from '@itrocks/sorted-array'
+import ReflectProperty       from './property'
 
 const TYPES = Symbol('types')
 
@@ -39,7 +38,7 @@ export default class ReflectClass<T extends object = object>
 	inheritedPropertyTypes(propertyTypes: PropertyTypes<T>)
 	{
 		const parent = this.parent
-		if (parent?.name) {
+		if (parent) {
 			Object.assign(propertyTypes, parent.propertyTypes)
 		}
 	}
@@ -47,7 +46,7 @@ export default class ReflectClass<T extends object = object>
 	get parent(): ReflectClass | null
 	{
 		const parentType = Object.getPrototypeOf(this.type)
-		const value      = (parentType === Function.prototype) ? null : new ReflectClass(baseType(parentType))
+		const value      = (parentType === Function.prototype) ? null : new ReflectClass(parentType)
 		Object.defineProperty(this, 'parent', { value })
 		return value
 	}
@@ -80,11 +79,10 @@ export default class ReflectClass<T extends object = object>
 
 	get propertyTypes()
 	{
-		const identifier = typeIdentifier(this.type)
-		let value: PropertyTypes<T> | undefined = Reflect.getMetadata(TYPES, this.type, identifier)
+		let value: PropertyTypes<T> | undefined = Reflect.getOwnMetadata(TYPES, this.type)
 		if (!value) {
 			value = {}
-			Reflect.defineMetadata(TYPES, value, this.type, identifier)
+			Reflect.defineMetadata(TYPES, value, this.type)
 			this.inheritedPropertyTypes(value)
 			Object.assign(value, propertyTypesFromFile<T>(fileOf(this.type)))
 			return value
