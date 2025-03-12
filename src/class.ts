@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import { fileOf }            from '@itrocks/class-file'
+import { baseType }          from '@itrocks/class-type'
 import { isObject, KeyOf }   from '@itrocks/class-type'
 import { Type, typeOf }      from '@itrocks/class-type'
 import { PropertyTypes }     from '@itrocks/property-type'
@@ -84,7 +85,9 @@ export default class ReflectClass<T extends object = object>
 			value = {}
 			Reflect.defineMetadata(TYPES, value, this.type)
 			this.inheritedPropertyTypes(value)
-			Object.assign(value, propertyTypesFromFile<T>(fileOf(this.type)))
+			if (this.type === baseType(this.type)) {
+				Object.assign(value, propertyTypesFromFile<T>(fileOf(this.type)))
+			}
 			return value
 		}
 		Object.defineProperty(this, 'propertyTypes', {value})
