@@ -20,9 +20,7 @@ npm i @itrocks/reflect
 
 The `product.ts` script:
 ```ts
-
-export { Product }
-export default class Product
+export class Product
 {
 	name:     string
 	price:    number
@@ -41,10 +39,10 @@ export default class Product
 The `index.ts` main script:
 ```ts
 import '@itrocks/class-file/automation'
-import { ReflectClass, ReflectProperty } from './reflect'
-import Product from './product'
+import { ReflectClass, ReflectProperty } from '@irocks/reflect'
+import { Product } from './product'
 
-const product = new Product('Widget', 10)
+const product      = new Product('Widget', 10)
 const productClass = new ReflectClass(product)
 
 console.log(productClass.name)  // Product
