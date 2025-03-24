@@ -1,6 +1,5 @@
 
-export { Product }
-export default class Product
+export class Product
 {
 	name:     string
 	price:    number

@@ -1,4 +1,3 @@
-import ReflectClass    from './class'
-import ReflectProperty from './property'
 
-export { ReflectClass, ReflectProperty }
+export { ReflectClass }    from './class'
+export { ReflectProperty } from './property'

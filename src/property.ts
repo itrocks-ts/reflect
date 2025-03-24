@@ -1,9 +1,8 @@
 import { KeyOf, Type }    from '@itrocks/class-type'
 import { CollectionType } from '@itrocks/property-type'
-import ReflectClass       from './class'
+import { ReflectClass }   from './class'
 
-export { ReflectProperty }
-export default class ReflectProperty<T extends object>
+export class ReflectProperty<T extends object>
 {
 	readonly #class: T | ReflectClass<T> | Type<T>
 	readonly name:   KeyOf<T>

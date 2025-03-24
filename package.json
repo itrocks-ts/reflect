@@ -58,5 +58,5 @@
 		"start:demo:esm": "node demo/esm/index"
 	},
 	"types": "./esm/reflect.d.ts",
-	"version": "0.0.8"
+	"version": "0.0.9"
 }

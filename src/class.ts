@@ -1,12 +1,12 @@
 import 'reflect-metadata'
-import { fileOf }            from '@itrocks/class-file'
-import { baseType }          from '@itrocks/class-type'
-import { isObject, KeyOf }   from '@itrocks/class-type'
-import { Type, typeOf }      from '@itrocks/class-type'
-import { PropertyTypes }     from '@itrocks/property-type'
-import propertyTypesFromFile from '@itrocks/property-type'
-import { SortedArray }       from '@itrocks/sorted-array'
-import ReflectProperty       from './property'
+import { fileOf }                from '@itrocks/class-file'
+import { baseType }              from '@itrocks/class-type'
+import { isObject, KeyOf }       from '@itrocks/class-type'
+import { Type, typeOf }          from '@itrocks/class-type'
+import { PropertyTypes }         from '@itrocks/property-type'
+import { propertyTypesFromFile } from '@itrocks/property-type'
+import { SortedArray }           from '@itrocks/sorted-array'
+import { ReflectProperty }       from './property'
 
 const TYPES = Symbol('types')
 
@@ -22,8 +22,7 @@ interface SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
 	includes(property: string): property is KeyOf<T>
 }
 
-export { ReflectClass }
-export default class ReflectClass<T extends object = object>
+export class ReflectClass<T extends object = object>
 {
 	readonly name:   string
 	readonly object: T | undefined

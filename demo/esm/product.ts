@@ -1,10 +1,8 @@
-import File from '@itrocks/class-file'
+import { File }          from '@itrocks/class-file'
 import { fileURLToPath } from 'node:url'
 
-export { Product }
-
 @File(fileURLToPath(import.meta.url))
-export default class Product
+export class Product
 {
 	name:     string
 	price:    number
