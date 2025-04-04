@@ -53,10 +53,7 @@ export class ReflectClass<T extends object = object>
 
 	get properties()
 	{
-		const properties = {} as Record<KeyOf<T>, ReflectProperty<T>>
-		for (const name of this.propertyNames) {
-			properties[name] = new ReflectProperty(this, name)
-		}
+		const properties = this.propertyNames.map(name => new ReflectProperty(this, name))
 		Object.defineProperty(this, 'properties', { value: properties })
 		return properties
 	}
