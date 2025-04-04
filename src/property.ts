@@ -18,7 +18,7 @@ export class ReflectProperty<T extends object>
 		const value = (this.#class instanceof ReflectClass)
 			? this.#class
 			: new ReflectClass(this.#class)
-		Object.defineProperty(this, 'class', { value })
+		Object.defineProperty(this, 'class', { configurable: true, enumerable: false, value, writable: true })
 		return value
 	}
 
@@ -28,21 +28,21 @@ export class ReflectProperty<T extends object>
 		if (!(value instanceof CollectionType)) {
 			throw 'ReflectProperty.collectionType is meant to be used exclusively on collection properties'
 		}
-		Object.defineProperty(this, 'collectionType', { value })
+		Object.defineProperty(this, 'collectionType', { configurable: true, enumerable: false, value, writable: true })
 		return value
 	}
 
 	get object()
 	{
 		const value = this.class.object
-		Object.defineProperty(this, 'object', { value })
+		Object.defineProperty(this, 'object', { configurable: true, enumerable: false, value, writable: true })
 		return value
 	}
 
 	get type()
 	{
 		const value = this.class.propertyTypes[this.name]
-		Object.defineProperty(this, 'type', { value })
+		Object.defineProperty(this, 'type', { configurable: true, enumerable: false, value, writable: true })
 		return value
 	}
 

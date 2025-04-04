@@ -12,9 +12,17 @@ const TYPES = Symbol('types')
 
 class SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
 {
-	constructor(object: T) {
+
+	static get [Symbol.species]()
+	{
+		return Array
+	}
+
+	constructor(object: T)
+	{
 		super(...Object.getOwnPropertyNames(object).sort() as KeyOf<T>[])
 	}
+
 }
 
 interface SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
@@ -47,14 +55,16 @@ export class ReflectClass<T extends object = object>
 	{
 		const parentType = Object.getPrototypeOf(this.type)
 		const value      = (parentType === Function.prototype) ? null : new ReflectClass(parentType)
-		Object.defineProperty(this, 'parent', { value })
+		Object.defineProperty(this, 'parent', { configurable: true, enumerable: false, value, writable: true })
 		return value
 	}
 
 	get properties()
 	{
 		const properties = this.propertyNames.map(name => new ReflectProperty(this, name))
-		Object.defineProperty(this, 'properties', { value: properties })
+		Object.defineProperty(
+			this, 'properties', { configurable: true, enumerable: false, value: properties, writable: true }
+		)
 		return properties
 	}
 
@@ -70,7 +80,9 @@ export class ReflectClass<T extends object = object>
 			})
 			object = Object.getPrototypeOf(object)
 		}
-		Object.defineProperty(this, 'propertyNames', { value: propertyNames })
+		Object.defineProperty(
+			this, 'propertyNames', { configurable: true, enumerable: false, value: propertyNames, writable: true }
+		)
 		return propertyNames
 	}
 
@@ -86,7 +98,7 @@ export class ReflectClass<T extends object = object>
 			}
 			return value
 		}
-		Object.defineProperty(this, 'propertyTypes', {value})
+		Object.defineProperty(this, 'propertyTypes', { configurable: true, enumerable: false, value, writable: true })
 		return value
 	}
 
