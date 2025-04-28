@@ -10,6 +10,19 @@ import { ReflectProperty }       from './property'
 
 const TYPES = Symbol('types')
 
+class Properties<T extends object>
+{
+	[s: string]: ReflectProperty<T>
+
+	*[Symbol.iterator](): Iterator<ReflectProperty<T>>
+	{
+		for (const value of Object.values(this)) {
+			yield value
+		}
+	}
+
+}
+
 class SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
 {
 
@@ -61,7 +74,10 @@ export class ReflectClass<T extends object = object>
 
 	get properties()
 	{
-		const properties = this.propertyNames.map(name => new ReflectProperty(this, name))
+		const properties = new Properties<T>
+		for (const name of this.propertyNames) {
+			properties[name] = new ReflectProperty(this, name)
+		}
 		Object.defineProperty(
 			this, 'properties', { configurable: true, enumerable: false, value: properties, writable: true }
 		)
