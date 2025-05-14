@@ -13,7 +13,7 @@
 	"description": "Runtime introspection of TypeScript classes and their properties, including property type",
 	"devDependencies": {
 		"@types/node": "^22.10",
-		"typescript": "~5.6"
+		"typescript": "~5.8"
 	},
 	"engines": {
 		"node": ">=18"
@@ -58,5 +58,5 @@
 		"start:demo:esm": "node demo/esm/index"
 	},
 	"types": "./esm/reflect.d.ts",
-	"version": "0.0.14"
+	"version": "0.0.15"
 }
