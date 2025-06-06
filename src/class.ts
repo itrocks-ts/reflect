@@ -1,14 +1,17 @@
 import 'reflect-metadata'
-import { fileOf }                from '@itrocks/class-file'
-import { baseType }              from '@itrocks/class-type'
-import { isObject, KeyOf }       from '@itrocks/class-type'
-import { Type, typeOf }          from '@itrocks/class-type'
-import { PropertyTypes }         from '@itrocks/property-type'
-import { propertyTypesFromFile } from '@itrocks/property-type'
-import { SortedArray }           from '@itrocks/sorted-array'
-import { ReflectProperty }       from './property'
+import { fileOf }                   from '@itrocks/class-file'
+import { baseType }                 from '@itrocks/class-type'
+import { isObject, KeyOf }          from '@itrocks/class-type'
+import { Type, typeOf }             from '@itrocks/class-type'
+import { PropertyDefaults }         from '@itrocks/property-default'
+import { propertyDefaultsFromFile } from '@itrocks/property-default'
+import { PropertyTypes }            from '@itrocks/property-type'
+import { propertyTypesFromFile }    from '@itrocks/property-type'
+import { SortedArray }              from '@itrocks/sorted-array'
+import { ReflectProperty }          from './property'
 
-const TYPES = Symbol('types')
+const DEFAULTS = Symbol('defaults')
+const TYPES    = Symbol('types')
 
 class Properties<T extends object>
 {
@@ -56,6 +59,14 @@ export class ReflectClass<T extends object = object>
 		this.name   = this.type.name
 	}
 
+	inheritedPropertyDefaults(propertyDefaults: PropertyDefaults)
+	{
+		const parent = this.parent
+		if (parent) {
+			Object.assign(propertyDefaults, parent.propertyDefaults)
+		}
+	}
+
 	inheritedPropertyTypes(propertyTypes: PropertyTypes<T>)
 	{
 		const parent = this.parent
@@ -82,6 +93,22 @@ export class ReflectClass<T extends object = object>
 			this, 'properties', { configurable: true, enumerable: false, value: properties, writable: true }
 		)
 		return properties
+	}
+
+	get propertyDefaults()
+	{
+		let value: PropertyDefaults | undefined = Reflect.getOwnMetadata(DEFAULTS, this.type)
+		if (!value) {
+			value = {}
+			Reflect.defineMetadata(DEFAULTS, value, this.type)
+			this.inheritedPropertyDefaults(value)
+			if (this.type === baseType(this.type)) {
+				Object.assign(value, propertyDefaultsFromFile(fileOf(this.type)))
+			}
+			return value
+		}
+		Object.defineProperty(this, 'propertyDefaults', { configurable: true, enumerable: false, value, writable: true })
+		return value
 	}
 
 	get propertyNames()

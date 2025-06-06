@@ -32,6 +32,13 @@ export class ReflectProperty<T extends object>
 		return value
 	}
 
+	get defaultValue()
+	{
+		const value = this.class.propertyDefaults[this.name]
+		Object.defineProperty(this, 'defaultValue', { configurable: true, enumerable: false, value, writable: true })
+		return value
+	}
+
 	get object()
 	{
 		const value = this.class.object
