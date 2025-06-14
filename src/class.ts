@@ -67,7 +67,7 @@ export class ReflectClass<T extends object = object>
 		}
 	}
 
-	inheritedPropertyTypes(propertyTypes: PropertyTypes<T>)
+	inheritedPropertyTypes(propertyTypes: PropertyTypes)
 	{
 		const parent = this.parent
 		if (parent) {
@@ -131,13 +131,13 @@ export class ReflectClass<T extends object = object>
 
 	get propertyTypes()
 	{
-		let value: PropertyTypes<T> | undefined = Reflect.getOwnMetadata(TYPES, this.type)
+		let value: PropertyTypes | undefined = Reflect.getOwnMetadata(TYPES, this.type)
 		if (!value) {
 			value = {}
 			Reflect.defineMetadata(TYPES, value, this.type)
 			this.inheritedPropertyTypes(value)
 			if (this.type === baseType(this.type)) {
-				Object.assign(value, propertyTypesFromFile<T>(fileOf(this.type)))
+				Object.assign(value, propertyTypesFromFile(fileOf(this.type)))
 			}
 			return value
 		}
