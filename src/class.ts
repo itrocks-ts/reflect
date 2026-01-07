@@ -13,15 +13,13 @@ import { ReflectProperty }          from './property'
 const DEFAULTS = Symbol('defaults')
 const TYPES    = Symbol('types')
 
-class Properties<T extends object>
+class Properties<T extends object> implements Iterable<ReflectProperty<T>>
 {
 	[s: string]: ReflectProperty<T>
 
-	*[Symbol.iterator](): Iterator<ReflectProperty<T>>
+	[Symbol.iterator]()
 	{
-		for (const value of Object.values(this)) {
-			yield value
-		}
+		return Object.values(this)[Symbol.iterator]()
 	}
 
 }
