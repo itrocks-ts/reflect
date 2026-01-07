@@ -27,6 +27,7 @@ export class ReflectProperty<T extends object>
 		const value = this.class.propertyTypes[this.name]
 		if (!(value instanceof CollectionType)) {
 			throw 'ReflectProperty.collectionType is meant to be used exclusively on collection properties'
+				+ ' [' + this.class.name + '.' + this.name + ']'
 		}
 		Object.defineProperty(this, 'collectionType', { configurable: true, enumerable: false, value, writable: true })
 		return value
