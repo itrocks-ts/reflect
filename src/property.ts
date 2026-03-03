@@ -1,4 +1,5 @@
-import { KeyOf, Type }    from '@itrocks/class-type'
+import { KeyOf }          from '@itrocks/class-type'
+import { Type }           from '@itrocks/class-type'
 import { CollectionType } from '@itrocks/property-type'
 import { ReflectClass }   from './class'
 
