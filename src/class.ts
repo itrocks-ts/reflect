@@ -15,16 +15,17 @@ import { ReflectProperty }          from './property'
 const DEFAULTS = Symbol('defaults')
 const TYPES    = Symbol('types')
 
-class Properties<T extends object> implements Iterable<ReflectProperty<T>>
-{
-	[s: string]: ReflectProperty<T>
+type Properties<T extends object> = PropertiesIterator<T> & PropertiesMap<T>
 
+class PropertiesIterator<T extends object> implements Iterable<ReflectProperty<T, KeyOf<T>>>
+{
 	[Symbol.iterator]()
 	{
 		return Object.values(this)[Symbol.iterator]()
 	}
-
 }
+
+type PropertiesMap<T extends object> = { [K in KeyOf<T>]: ReflectProperty<T, K> }
 
 class SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
 {
@@ -59,7 +60,7 @@ export class ReflectClass<T extends object = object>
 		this.name   = this.type.name
 	}
 
-	inheritedPropertyDefaults(propertyDefaults: PropertyDefaults)
+	inheritedPropertyDefaults(propertyDefaults: PropertyDefaults<T>)
 	{
 		const parent = this.parent
 		if (parent) {
@@ -67,7 +68,7 @@ export class ReflectClass<T extends object = object>
 		}
 	}
 
-	inheritedPropertyTypes(propertyTypes: PropertyTypes)
+	inheritedPropertyTypes(propertyTypes: PropertyTypes<T>)
 	{
 		const parent = this.parent
 		if (parent) {
@@ -85,25 +86,25 @@ export class ReflectClass<T extends object = object>
 
 	get properties()
 	{
-		const properties = new Properties<T>
+		const properties = new PropertiesIterator<T> as Record<string, any>
 		for (const name of this.propertyNames) {
 			properties[name] = new ReflectProperty(this, name)
 		}
 		Object.defineProperty(
 			this, 'properties', { configurable: true, enumerable: false, value: properties, writable: true }
 		)
-		return properties
+		return properties as Properties<T>
 	}
 
 	get propertyDefaults()
 	{
-		let value: PropertyDefaults | undefined = Reflect.getOwnMetadata(DEFAULTS, this.type)
+		let value = Reflect.getOwnMetadata(DEFAULTS, this.type) as PropertyDefaults<T> | undefined
 		if (!value) {
-			value = {}
+			value = {} as PropertyDefaults<T>
 			Reflect.defineMetadata(DEFAULTS, value, this.type)
 			this.inheritedPropertyDefaults(value)
 			if (this.type === baseType(this.type)) {
-				Object.assign(value, propertyDefaultsFromFile(fileOf(this.type)))
+				Object.assign(value, propertyDefaultsFromFile<T>(fileOf(this.type)))
 			}
 			return value
 		}
@@ -114,7 +115,7 @@ export class ReflectClass<T extends object = object>
 	get propertyNames()
 	{
 		let   object           = new this.type
-		const propertyNames    = new SortedPropertyNames(object)
+		const propertyNames    = new SortedPropertyNames<T>(object)
 		propertyNames.distinct = true
 		while (object) {
 			Object.entries(Object.getOwnPropertyDescriptors(object)).forEach(([name, descriptor]) => {
@@ -131,9 +132,9 @@ export class ReflectClass<T extends object = object>
 
 	get propertyTypes()
 	{
-		let value: PropertyTypes | undefined = Reflect.getOwnMetadata(TYPES, this.type)
+		let value: PropertyTypes<T> | undefined = Reflect.getOwnMetadata(TYPES, this.type)
 		if (!value) {
-			value = {}
+			value = {} as PropertyTypes<T>
 			Reflect.defineMetadata(TYPES, value, this.type)
 			this.inheritedPropertyTypes(value)
 			if (this.type === baseType(this.type)) {

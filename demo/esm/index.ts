@@ -1,5 +1,6 @@
-import { ReflectClass, ReflectProperty } from '../../esm/reflect.js'
-import Product from './product.js'
+import { ReflectClass }    from '../../esm/reflect.js'
+import { ReflectProperty } from '../../esm/reflect.js'
+import { Product }         from './product.js'
 
 const product      = new Product('Widget', 10)
 const productClass = new ReflectClass(product)

@@ -3,12 +3,12 @@ import { Type }           from '@itrocks/class-type'
 import { CollectionType } from '@itrocks/property-type'
 import { ReflectClass }   from './class'
 
-export class ReflectProperty<T extends object>
+export class ReflectProperty<T extends object, K extends KeyOf<T> = KeyOf<T>>
 {
 	readonly #class: T | ReflectClass<T> | Type<T>
-	readonly name:   KeyOf<T>
+	readonly name:   K
 
-	constructor(object: T | ReflectClass<T> | Type<T>, name: KeyOf<T>)
+	constructor(object: T | ReflectClass<T> | Type<T>, name: K)
 	{
 		this.#class = object
 		this.name   = name
