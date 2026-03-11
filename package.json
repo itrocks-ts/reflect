@@ -54,10 +54,13 @@
 		"build:demo": "npm run build:demo:cjs && npm run build:demo:esm",
 		"build:demo:cjs": "tsc -p tsconfig.demo.cjs.json",
 		"build:demo:esm": "tsc -p tsconfig.demo.esm.json",
+		"build:test": "npm run build:test:cjs && npm run build:test:esm",
+		"build:test:cjs": "tsc -p tsconfig.test.cjs.json",
+		"build:test:esm": "tsc -p tsconfig.test.esm.json",
 		"build:all": "npm run build && npm run build:demo",
 		"start:demo:cjs": "node demo/cjs/index",
 		"start:demo:esm": "node demo/esm/index"
 	},
 	"types": "./esm/reflect.d.ts",
-	"version": "0.1.4"
+	"version": "0.1.5"
 }

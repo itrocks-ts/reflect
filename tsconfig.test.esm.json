@@ -1,0 +1,9 @@
+{
+	"compilerOptions": {
+		"module": "ES2022",
+		"outDir": "./test"
+	},
+	"exclude": [],
+	"extends": "./tsconfig.json",
+	"include": ["./test"]
+}

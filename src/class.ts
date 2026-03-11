@@ -19,10 +19,12 @@ type Properties<T extends object> = PropertiesIterator<T> & PropertiesMap<T>
 
 class PropertiesIterator<T extends object> implements Iterable<ReflectProperty<T, KeyOf<T>>>
 {
-	[Symbol.iterator]()
+
+	[Symbol.iterator](): Iterator<ReflectProperty<T, KeyOf<T>>>
 	{
 		return Object.values(this)[Symbol.iterator]()
 	}
+
 }
 
 type PropertiesMap<T extends object> = { [K in KeyOf<T>]: ReflectProperty<T, K> }
