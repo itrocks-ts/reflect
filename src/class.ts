@@ -2,7 +2,6 @@ import 'reflect-metadata'
 import { fileOf }                   from '@itrocks/class-file'
 import { baseType }                 from '@itrocks/class-type'
 import { isObject }                 from '@itrocks/class-type'
-import { KeyOf }                    from '@itrocks/class-type'
 import { Type }                     from '@itrocks/class-type'
 import { typeOf }                   from '@itrocks/class-type'
 import { PropertyDefaults }         from '@itrocks/property-default'
@@ -15,18 +14,7 @@ import { ReflectProperty }          from './property'
 const DEFAULTS = Symbol('defaults')
 const TYPES    = Symbol('types')
 
-class Properties<T extends object> implements Iterable<ReflectProperty<T>>
-{
-	[s: string]: ReflectProperty<T>
-
-	[Symbol.iterator]()
-	{
-		return Object.values(this)[Symbol.iterator]()
-	}
-
-}
-
-class SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
+class SortedPropertyNames<T extends object, K extends keyof T = keyof T> extends SortedArray<K>
 {
 
 	static get [Symbol.species]()
@@ -36,14 +24,14 @@ class SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
 
 	constructor(object: T)
 	{
-		super(...Object.getOwnPropertyNames(object).sort() as KeyOf<T>[])
+		super(...Object.getOwnPropertyNames(object).sort() as K[])
 	}
 
 }
 
-interface SortedPropertyNames<T extends object> extends SortedArray<KeyOf<T>>
+interface SortedPropertyNames<T extends object, K extends keyof T = keyof T> extends SortedArray<K>
 {
-	includes(property: string): property is KeyOf<T>
+	includes(property: number | string | symbol): property is K
 }
 
 export class ReflectClass<T extends object = object>
@@ -59,7 +47,7 @@ export class ReflectClass<T extends object = object>
 		this.name   = this.type.name
 	}
 
-	inheritedPropertyDefaults(propertyDefaults: PropertyDefaults<T>)
+	inheritPropertyDefaults(propertyDefaults: PropertyDefaults<T>)
 	{
 		const parent = this.parent
 		if (parent) {
@@ -67,7 +55,7 @@ export class ReflectClass<T extends object = object>
 		}
 	}
 
-	inheritedPropertyTypes(propertyTypes: PropertyTypes<T>)
+	inheritPropertyTypes(propertyTypes: PropertyTypes<T>)
 	{
 		const parent = this.parent
 		if (parent) {
@@ -85,12 +73,24 @@ export class ReflectClass<T extends object = object>
 
 	get properties()
 	{
-		const properties = new Properties<T>
+		const properties = new Array<ReflectProperty<T>>
 		for (const name of this.propertyNames) {
-			properties[name] = new ReflectProperty(this, name)
+			properties.push(new ReflectProperty(this, name))
 		}
 		Object.defineProperty(
 			this, 'properties', { configurable: true, enumerable: false, value: properties, writable: true }
+		)
+		return properties
+	}
+
+	get property()
+	{
+		const properties = {} as { [K in keyof T]: ReflectProperty<T, K> }
+		for (const property of this.properties) {
+			properties[property.name] = property
+		}
+		Object.defineProperty(
+			this, 'property', { configurable: true, enumerable: false, value: properties, writable: true }
 		)
 		return properties
 	}
@@ -101,7 +101,7 @@ export class ReflectClass<T extends object = object>
 		if (!value) {
 			value = {} as PropertyDefaults<T>
 			Reflect.defineMetadata(DEFAULTS, value, this.type)
-			this.inheritedPropertyDefaults(value)
+			this.inheritPropertyDefaults(value)
 			if (this.type === baseType(this.type)) {
 				Object.assign(value, propertyDefaultsFromFile<T>(fileOf(this.type)))
 			}
@@ -119,7 +119,7 @@ export class ReflectClass<T extends object = object>
 		while (object) {
 			Object.entries(Object.getOwnPropertyDescriptors(object)).forEach(([name, descriptor]) => {
 				if (!descriptor.get || (name[0] === '_')) return
-				propertyNames.push(name as KeyOf<T>)
+				propertyNames.push(name as keyof T)
 			})
 			object = Object.getPrototypeOf(object)
 		}
@@ -135,7 +135,7 @@ export class ReflectClass<T extends object = object>
 		if (!value) {
 			value = {} as PropertyTypes<T>
 			Reflect.defineMetadata(TYPES, value, this.type)
-			this.inheritedPropertyTypes(value)
+			this.inheritPropertyTypes(value)
 			if (this.type === baseType(this.type)) {
 				Object.assign(value, propertyTypesFromFile(fileOf(this.type)))
 			}
