@@ -113,7 +113,10 @@ export class ReflectClass<T extends object = object>
 
 	get propertyNames()
 	{
-		let   object           = new this.type
+		let object: T
+		// TODO: replace runtime instantiation with .d.ts AST analysis
+		try { object = new this.type }
+		catch { return [] }
 		const propertyNames    = new SortedPropertyNames<T>(object)
 		propertyNames.distinct = true
 		while (object) {
