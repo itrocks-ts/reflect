@@ -66,9 +66,9 @@ export class ReflectClass<T extends object = object>
 	get parent(): ReflectClass | null
 	{
 		const parentType = Object.getPrototypeOf(this.type)
-		const value      = (parentType === Function.prototype) ? null : new ReflectClass(parentType)
-		Object.defineProperty(this, 'parent', { configurable: true, enumerable: false, value, writable: true })
-		return value
+		const parent     = (parentType === Function.prototype) ? null : new ReflectClass(parentType)
+		Object.defineProperty(this, 'parent', { configurable: true, enumerable: false, value: parent, writable: true })
+		return parent
 	}
 
 	get properties()
