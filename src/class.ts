@@ -111,7 +111,7 @@ export class ReflectClass<T extends object = object>
 		return value
 	}
 
-	get propertyNames()
+	get propertyNames(): Array<keyof T>
 	{
 		let object: T
 		// TODO: replace runtime instantiation with .d.ts AST analysis
