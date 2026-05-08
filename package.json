@@ -14,10 +14,10 @@
 	"description": "Runtime introspection of TypeScript classes and their properties, including property type",
 	"devDependencies": {
 		"@types/node": "^24.10",
-		"typescript": "~5.9"
+		"typescript": "^6.0"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=24"
 	},
 	"exports": {
 		"import": "./esm/reflect.js",
@@ -26,9 +26,9 @@
 	"files": [
 		"LICENSE",
 		"README.md",
-		"*/*.d.ts",
-		"*/*.js",
-		"!esm/esm.*"
+		"cjs",
+		"esm",
+		"!*.map"
 	],
 	"homepage": "https://it.rocks",
 	"keywords": [
@@ -61,6 +61,5 @@
 		"start:demo:cjs": "node demo/cjs/index",
 		"start:demo:esm": "node demo/esm/index"
 	},
-	"types": "./esm/reflect.d.ts",
-	"version": "0.2.5"
+	"version": "0.2.6"
 }

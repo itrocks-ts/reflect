@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
-		"module": "CommonJS"
+		"module": "nodenext",
+		"rootDir": "demo/cjs"
 	},
 	"extends": "./tsconfig.json",
-	"include": ["./demo/cjs"]
+	"include": ["demo/cjs"]
 }

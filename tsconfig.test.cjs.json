@@ -1,9 +1,8 @@
 {
 	"compilerOptions": {
-		"module": "CommonJS",
-		"outDir": "./test"
+		"module": "nodenext",
+		"rootDir": "test"
 	},
-	"exclude": [],
 	"extends": "./tsconfig.json",
-	"include": ["./test"]
+	"include": ["test"]
 }
